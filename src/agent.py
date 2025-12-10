@@ -282,12 +282,22 @@ def _start_profile_server(host: str = "0.0.0.0", port: int = 8080):
 
 # Start the profile server as soon as this module is imported so the frontend can POST before
 # a session begins. This is a best-effort convenience for local development.
-try:
-    _start_profile_server()
-except Exception:
-    logger.exception("Failed to initialize profile HTTP endpoint")
+# try:
+#     _start_profile_server()
+# except Exception:
+#     logger.exception("Failed to initialize profile HTTP endpoint")
 
 
 
+# if __name__ == "__main__":
+#     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
 if __name__ == "__main__":
+    # Railway exposes a single port
+    port = int(os.getenv("PORT", "8080"))
+    logger.info(f"Starting profile server on port {port}")
+
+    _start_profile_server(host="0.0.0.0", port=port)
+
+    # Start LiveKit worker in same process
     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
+
